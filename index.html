@@ -2,59 +2,55 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SmartFarm Admin Dashboard</title>
+<title>Farm Guardian Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{box-sizing:border-box;font-family:Inter,Arial,sans-serif}
-body{margin:0;background:#f4f6f9}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Arial,sans-serif}
+body{background:#f4f6fb;height:100vh}
 
 /* LAYOUT */
 .app{
   display:flex;
   height:100vh;
+  flex-direction:row;
 }
 
-/* SIDEBAR */
+/* SIDEBAR (DESKTOP) */
 .sidebar{
   width:90px;
-  background:#0f172a;
+  background:linear-gradient(180deg,#0f172a,#020617);
   display:flex;
   flex-direction:column;
   align-items:center;
   padding:18px 0;
-  gap:16px;
+  gap:18px;
 }
 
 .logo{
-  width:54px;
-  height:54px;
-  border-radius:50%;
+  width:52px;height:52px;
   background:#22c55e;
-  color:#022c22;
+  border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
   font-weight:900;
-  font-size:20px;
+  color:#022c22;
 }
 
-.nav-btn{
-  width:52px;
-  height:52px;
+.icon{
+  width:50px;height:50px;
   border-radius:16px;
-  background:#1e293b;
-  color:#cbd5e1;
-  border:none;
-  cursor:pointer;
-  font-size:22px;
+  background:#020617;
   display:flex;
   align-items:center;
   justify-content:center;
+  font-size:22px;
+  cursor:pointer;
+  color:#94a3b8;
   transition:.25s;
 }
-.nav-btn:hover{background:#334155}
-.nav-btn.active{
+.icon:hover,.icon.active{
   background:#22c55e;
   color:#022c22;
 }
@@ -73,25 +69,20 @@ body{margin:0;background:#f4f6f9}
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:0 24px;
-  box-shadow:0 6px 18px rgba(0,0,0,.06);
+  padding:0 20px;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
 }
-
 .title{
   font-size:20px;
   font-weight:900;
 }
-
 .admin{
   display:flex;
   align-items:center;
-  gap:12px;
-  font-weight:800;
+  gap:10px;
 }
-
 .admin-circle{
-  width:38px;
-  height:38px;
+  width:36px;height:36px;
   border-radius:50%;
   background:#2563eb;
   color:#fff;
@@ -104,18 +95,47 @@ body{margin:0;background:#f4f6f9}
 /* CONTENT */
 .content{
   flex:1;
-  position:relative;
 }
-
 iframe{
   width:100%;
   height:100%;
   border:none;
-  display:none;
 }
 
-iframe.active{
-  display:block;
+/* MOBILE */
+@media(max-width:768px){
+  .app{
+    flex-direction:column;
+  }
+
+  .sidebar{
+    width:100%;
+    height:64px;
+    flex-direction:row;
+    justify-content:space-around;
+    position:fixed;
+    bottom:0;
+    z-index:10;
+  }
+
+  .logo{
+    display:none;
+  }
+
+  .icon{
+    width:44px;
+    height:44px;
+    border-radius:12px;
+    font-size:20px;
+  }
+
+  .main{
+    margin-bottom:64px;
+  }
+
+  .title{
+    font-size:18px;
+  }
 }
 </style>
 </head>
@@ -128,11 +148,11 @@ iframe.active{
   <div class="sidebar">
     <div class="logo">SF</div>
 
-    <button class="nav-btn active" onclick="openTab('weather')" title="Weather">☀</button>
-    <button class="nav-btn" onclick="openTab('soil')" title="Soil">🌱</button>
-    <button class="nav-btn" onclick="openTab('irrigation')" title="Irrigation">💧</button>
-    <button class="nav-btn" onclick="openTab('disease')" title="Disease">🦠</button>
-    <button class="nav-btn" onclick="openTab('animal')" title="Animal Detection">🐘</button>
+    <div class="icon active" onclick="loadDash('weather.html',this)">☀️</div>
+    <div class="icon" onclick="loadDash('soil.html',this)">🌱</div>
+    <div class="icon" onclick="loadDash('Irrigation.html',this)">💧</div>
+    <div class="icon" onclick="loadDash('disease.html',this)">🦠</div>
+    <div class="icon" onclick="loadDash('animal.html',this)">🐾</div>
   </div>
 
   <!-- MAIN -->
@@ -149,11 +169,7 @@ iframe.active{
 
     <!-- CONTENT -->
     <div class="content">
-      <iframe id="weather" class="active" src="weather.html"></iframe>
-      <iframe id="soil" src="soil data.html"></iframe>
-      <iframe id="irrigation" src="Irrigation.html"></iframe>
-      <iframe id="disease" src="disease.html"></iframe>
-      <iframe id="animal" src="animal detection.html"></iframe>
+      <iframe id="frame" src="weather.html"></iframe>
     </div>
 
   </div>
@@ -161,21 +177,19 @@ iframe.active{
 </div>
 
 <script>
-function openTab(tab){
-  document.querySelectorAll("iframe").forEach(i=>i.classList.remove("active"));
-  document.getElementById(tab).classList.add("active");
-
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
-  event.target.classList.add("active");
+function loadDash(file,el){
+  document.getElementById("frame").src=file;
+  document.querySelectorAll(".icon").forEach(i=>i.classList.remove("active"));
+  el.classList.add("active");
 
   const titles={
-    weather:"Weather Intelligence",
-    soil:"Soil Intelligence",
-    irrigation:"Irrigation Control",
-    disease:"Crop Disease Monitor",
-    animal:"Animal Detection"
+    "weather.html":"Weather Intelligence",
+    "soil.html":"Soil Intelligence",
+    "Irrigation.html":"Irrigation Intelligence",
+    "disease.html":"Disease Detection",
+    "animal.html":"Animal Detection"
   };
-  document.getElementById("pageTitle").textContent=titles[tab];
+  document.getElementById("pageTitle").innerText=titles[file];
 }
 </script>
 
