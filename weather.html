@@ -1,0 +1,293 @@
+cc<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartFarm – Weather Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Inter,Arial,sans-serif}
+body{margin:0;background:#f4f6f9;color:#111}
+
+/* HEADER */
+.header{
+  padding:22px 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.header h1{margin:0;font-size:28px;font-weight:800}
+.status{
+  background:#dcfce7;
+  color:#166534;
+  padding:8px 18px;
+  border-radius:20px;
+  font-weight:800;
+}
+
+/* COMMON CARDS */
+.card,.widget,.value-card,.graph-card{
+  background:#fff;
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 12px 30px rgba(0,0,0,.06);
+}
+
+/* SENSOR HEALTH */
+.card{margin:0 28px 22px}
+.sensor-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:14px;
+  font-weight:700;
+}
+.active{color:#16a34a}
+
+/* TOP WIDGETS */
+.top-widgets{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+  margin:0 28px 26px;
+}
+
+/* RISK RING */
+.risk-ring{
+  width:130px;height:130px;border-radius:50%;
+  background:conic-gradient(#ef4444 0% 72%,#e5e7eb 72%);
+  display:flex;align-items:center;justify-content:center;
+  margin:14px auto;
+}
+.risk-ring span{
+  width:86px;height:86px;border-radius:50%;
+  background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:20px;color:#dc2626;
+}
+
+/* CCI */
+.cci{font-size:46px;font-weight:900;color:#16a34a}
+
+/* SYSTEM CONTROLS */
+.control-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:16px;
+}
+.switch{
+  position:relative;width:50px;height:28px;
+}
+.switch input{opacity:0;width:0;height:0}
+.slider{
+  position:absolute;inset:0;
+  background:#cbd5e1;border-radius:20px;
+  transition:.3s;
+}
+.slider:before{
+  content:"";position:absolute;height:22px;width:22px;
+  left:3px;bottom:3px;background:#fff;
+  border-radius:50%;transition:.3s;
+}
+input:checked + .slider{background:#22c55e}
+input:checked + .slider:before{transform:translateX(22px)}
+
+.lang-toggle{
+  display:flex;background:#e5e7eb;border-radius:20px;
+  overflow:hidden;
+}
+.lang-toggle button{
+  border:none;padding:6px 16px;
+  font-weight:800;cursor:pointer;
+}
+.active-lang{background:#111827;color:#fff}
+
+/* VALUES */
+.values{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:18px;
+  margin:0 28px 30px;
+}
+.value-card h3{margin:0;font-size:14px;color:#555}
+.value-card p{margin:6px 0 0;font-size:24px;font-weight:900}
+
+/* SECTION */
+.section-title{
+  margin:0 28px 14px;
+  font-size:22px;
+  font-weight:900;
+}
+
+/* SLIDERS */
+.slider-x{
+  display:flex;
+  gap:20px;
+  overflow-x:auto;
+  padding:0 28px 32px;
+}
+.slider-x::-webkit-scrollbar{height:8px}
+.slider-x::-webkit-scrollbar-thumb{
+  background:#cbd5e1;border-radius:10px
+}
+
+/* GRAPHS */
+.graph-card{min-width:360px}
+.graph-card h3{margin:0 0 10px;font-size:16px}
+
+/* ALERT */
+.fire-alert{
+  margin:0 28px 28px;
+  background:#fee2e2;
+  color:#991b1b;
+  padding:18px;
+  border-left:6px solid #dc2626;
+  font-weight:900;
+  border-radius:18px;
+}
+
+/* ADVISORY */
+.advisory-card{
+  min-width:300px;
+  border-radius:20px;
+  padding:22px;
+  color:#fff;
+  font-weight:800;
+}
+.red{background:#dc2626}
+.yellow{background:#facc15;color:#111}
+.orange{background:#f59e0b}
+.blue{background:#2563eb}
+.green{background:#16a34a}
+
+@media(max-width:600px){
+  .graph-card{min-width:300px}
+  .advisory-card{min-width:260px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1 data-en="Weather Intelligence Panel" data-hi="मौसम बुद्धिमत्ता पैनल"></h1>
+  <div class="status" data-en="SYSTEM ONLINE" data-hi="सिस्टम ऑनलाइन"></div>
+</div>
+
+<!-- SENSOR HEALTH -->
+<div class="card">
+  <h3 data-en="Sensor Health" data-hi="सेंसर स्थिति"></h3>
+  <div class="sensor-row">
+    <span>DHT22: <span class="active" data-en="Active" data-hi="सक्रिय"></span></span>
+    <span>Light: <span class="active" data-en="Active" data-hi="सक्रिय"></span></span>
+    <span>BMP280: <span class="active" data-en="Active" data-hi="सक्रिय"></span></span>
+    <span>Wind: <span class="active" data-en="Active" data-hi="सक्रिय"></span></span>
+    <span>Rain: <span class="active" data-en="Active" data-hi="सक्रिय"></span></span>
+    <span>MQ135: <span class="active" data-en="Active" data-hi="सक्रिय"></span></span>
+    <span>Fire: <span class="active" data-en="Active" data-hi="सक्रिय"></span></span>
+  </div>
+</div>
+
+<!-- TOP WIDGETS -->
+<div class="top-widgets">
+
+  <div class="widget">
+    <h3 data-en="Overall Weather Risk" data-hi="कुल मौसम जोखिम"></h3>
+    <div class="risk-ring"><span>HIGH</span></div>
+    <p style="text-align:center;color:#dc2626;font-weight:800"
+       data-en="Heat + Low Humidity"
+       data-hi="अधिक गर्मी + कम नमी"></p>
+  </div>
+
+  <div class="widget">
+    <h3 data-en="Crop Comfort Index" data-hi="फसल आराम सूचकांक"></h3>
+    <div class="cci">42</div>
+    <p data-en="0 = Stress • 100 = Ideal"
+       data-hi="0 = तनाव • 100 = आदर्श"></p>
+  </div>
+
+  <div class="widget">
+    <h3 data-en="System Controls" data-hi="सिस्टम नियंत्रण"></h3>
+
+    <div class="control-row">
+      <span data-en="Visual Alerts" data-hi="दृश्य चेतावनी"></span>
+      <label class="switch">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="control-row">
+      <span data-en="Language" data-hi="भाषा"></span>
+      <div class="lang-toggle">
+        <button id="enBtn" class="active-lang">EN</button>
+        <button id="hiBtn">हिंदी</button>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;color:#16a34a;font-weight:900"
+         data-en="● Smart Monitoring Active"
+         data-hi="● स्मार्ट निगरानी सक्रिय"></div>
+  </div>
+
+</div>
+
+<!-- VALUES -->
+<div class="values">
+  <div class="value-card"><h3 data-en="Temperature" data-hi="तापमान"></h3><p>36°C</p></div>
+  <div class="value-card"><h3 data-en="Humidity" data-hi="नमी"></h3><p>28%</p></div>
+  <div class="value-card"><h3 data-en="Wind Speed" data-hi="हवा की गति"></h3><p>18 km/h</p></div>
+  <div class="value-card"><h3 data-en="Light" data-hi="प्रकाश"></h3><p data-en="High" data-hi="अधिक"></p></div>
+  <div class="value-card"><h3 data-en="Rain" data-hi="वर्षा"></h3><p data-en="No" data-hi="नहीं"></p></div>
+  <div class="value-card"><h3 data-en="Pressure" data-hi="दबाव"></h3><p>1004 hPa</p></div>
+</div>
+
+<!-- WEATHER TRENDS -->
+<h2 class="section-title" data-en="Weather Trends (Swipe)" data-hi="मौसम रुझान (स्वाइप)"></h2>
+<div class="slider-x">
+  <div class="graph-card"><h3 data-en="Temperature (Heat Stress)" data-hi="तापमान (हीट स्ट्रेस)"></h3><canvas id="tempChart"></canvas></div>
+  <div class="graph-card"><h3 data-en="Humidity (Low)" data-hi="नमी (कम)"></h3><canvas id="humChart"></canvas></div>
+  <div class="graph-card"><h3 data-en="Wind Speed (Moderate)" data-hi="हवा की गति (मध्यम)"></h3><canvas id="windChart"></canvas></div>
+  <div class="graph-card"><h3 data-en="Air Quality (Safe)" data-hi="वायु गुणवत्ता (सुरक्षित)"></h3><canvas id="airChart"></canvas></div>
+</div>
+
+<!-- FIRE ALERT -->
+<div class="fire-alert"
+     data-en="🔥 FIRE ALERT: High-risk fire conditions detected. Stay alert."
+     data-hi="🔥 आग चेतावनी: आग का उच्च जोखिम। सतर्क रहें।"></div>
+
+<!-- ADVISORY -->
+<h2 class="section-title" data-en="Smart Weather Advisory (Swipe)" data-hi="स्मार्ट मौसम सलाह (स्वाइप)"></h2>
+<div class="slider-x">
+  <div class="advisory-card red" data-en="🔥 Fire risk very high<br>Confidence: 91%" data-hi="🔥 आग का जोखिम बहुत अधिक<br>विश्वसनीयता: 91%"></div>
+  <div class="advisory-card yellow" data-en="🌡 Heat stress detected<br>Confidence: 88%" data-hi="🌡 हीट स्ट्रेस पाया गया<br>विश्वसनीयता: 88%"></div>
+  <div class="advisory-card orange" data-en="💨 Wind may affect spraying<br>Confidence: 79%" data-hi="💨 हवा छिड़काव को प्रभावित कर सकती है<br>विश्वसनीयता: 79%"></div>
+  <div class="advisory-card blue" data-en="🌫 Air quality safe<br>Confidence: 95%" data-hi="🌫 वायु गुणवत्ता सुरक्षित<br>विश्वसनीयता: 95%"></div>
+  <div class="advisory-card green" data-en="🌱 Evening favorable for crops<br>Confidence: 84%" data-hi="🌱 शाम फसलों के लिए अनुकूल<br>विश्वसनीयता: 84%"></div>
+</div>
+
+<script>
+const labels=["6AM","9AM","12PM","3PM","6PM"];
+new Chart(tempChart,{type:"line",data:{labels,datasets:[{data:[28,32,36,35,33],borderColor:"#ef4444",tension:.4}]},options:{plugins:{legend:{display:false}}}});
+new Chart(humChart,{type:"line",data:{labels,datasets:[{data:[60,48,28,32,40],borderColor:"#3b82f6",tension:.4}]},options:{plugins:{legend:{display:false}}}});
+new Chart(windChart,{type:"line",data:{labels,datasets:[{data:[6,10,18,15,12],borderColor:"#22c55e",tension:.4}]},options:{plugins:{legend:{display:false}}}});
+new Chart(airChart,{type:"line",data:{labels,datasets:[{data:[300,280,260,270,290],borderColor:"#8b5cf6",tension:.4}]},options:{plugins:{legend:{display:false}}}});
+
+const elements=document.querySelectorAll("[data-en]");
+const enBtn=document.getElementById("enBtn");
+const hiBtn=document.getElementById("hiBtn");
+function setLang(l){
+  elements.forEach(e=>e.innerHTML=e.getAttribute("data-"+l));
+  enBtn.classList.toggle("active-lang",l==="en");
+  hiBtn.classList.toggle("active-lang",l==="hi");
+}
+enBtn.onclick=()=>setLang("en");
+hiBtn.onclick=()=>setLang("hi");
+setLang("en");
+</script>
+
+</body>
+</html>
+

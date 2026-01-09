@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartFarm – Soil Intelligence</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Inter,Arial,sans-serif}
+body{margin:0;background:#f4f6f9;color:#111}
+
+/* HEADER */
+.header{
+  padding:22px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.header h1{margin:0;font-size:28px;font-weight:900}
+.status{
+  background:#dcfce7;
+  color:#166534;
+  padding:8px 18px;
+  border-radius:22px;
+  font-weight:800;
+}
+
+/* SENSOR BAR */
+.sensor-bar{
+  background:#fff;
+  margin:0 30px 24px;
+  padding:18px;
+  border-radius:18px;
+  display:flex;
+  justify-content:space-between;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+  font-weight:700;
+}
+.active{color:#16a34a}
+
+/* MAIN GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:22px;
+  margin:0 30px 28px;
+}
+
+/* CARD */
+.card{
+  background:#fff;
+  border-radius:22px;
+  padding:22px;
+  box-shadow:0 12px 28px rgba(0,0,0,.07);
+}
+
+/* DONUT */
+.risk-wrap{
+  position:relative;
+  width:190px;
+  height:190px;
+  margin:18px auto;
+}
+.risk-wrap canvas{
+  width:190px!important;
+  height:190px!important;
+}
+.risk-center{
+  position:absolute;
+  inset:50%;
+  transform:translate(-50%,-50%);
+  width:110px;
+  height:110px;
+  background:#fff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:22px;
+}
+.high{color:#dc2626}
+.medium{color:#f59e0b}
+.low{color:#16a34a}
+
+/* VALUES */
+.values{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  margin-top:14px;
+}
+.value{
+  background:#f8fafc;
+  border-radius:14px;
+  padding:14px;
+  font-weight:800;
+}
+.value span{display:block;font-size:14px;color:#555}
+
+/* ADVISORY SLIDER */
+.section-title{
+  margin:0 30px 14px;
+  font-size:22px;
+  font-weight:900;
+}
+.slider{
+  display:flex;
+  gap:18px;
+  overflow-x:auto;
+  padding:0 30px 40px;
+}
+.advisory{
+  min-width:300px;
+  border-radius:20px;
+  padding:20px;
+  color:#fff;
+  font-weight:800;
+}
+.red{background:#dc2626}
+.yellow{background:#facc15;color:#111}
+.green{background:#16a34a}
+.blue{background:#2563eb}
+
+/* LANGUAGE */
+.lang{
+  display:flex;
+  gap:8px;
+}
+.lang button{
+  border:none;
+  padding:6px 14px;
+  border-radius:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+.active-lang{background:#111827;color:#fff}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1 data-en="Soil Intelligence Panel" data-hi="मृदा बुद्धिमत्ता पैनल"></h1>
+  <div class="status" data-en="SYSTEM ONLINE" data-hi="सिस्टम ऑनलाइन"></div>
+</div>
+
+<!-- SENSOR STATUS -->
+<div class="sensor-bar">
+  <span>Soil Moisture: <span class="active" data-en="Active" data-hi="सक्रिय"></span></span>
+  <span>Soil Temperature: <span class="active" data-en="Active" data-hi="सक्रिय"></span></span>
+
+  <div class="lang">
+    <button id="enBtn" class="active-lang">EN</button>
+    <button id="hiBtn">हिंदी</button>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="grid">
+
+  <!-- SOIL MOISTURE -->
+  <div class="card">
+    <h3 data-en="Soil Moisture Status (1 Acre)" data-hi="मिट्टी की नमी स्थिति (1 एकड़)"></h3>
+
+    <div class="risk-wrap">
+      <canvas id="moistureChart"></canvas>
+      <div class="risk-center medium">MEDIUM</div>
+    </div>
+
+    <p style="text-align:center;font-weight:800;color:#f59e0b"
+       data-en="Moisture slightly below optimal"
+       data-hi="नमी आदर्श से थोड़ी कम है"></p>
+
+    <div class="values">
+      <div class="value"><span data-en="Average Moisture" data-hi="औसत नमी"></span>38%</div>
+      <div class="value"><span data-en="Optimal Range" data-hi="आदर्श सीमा"></span>45–60%</div>
+    </div>
+  </div>
+
+  <!-- SOIL TEMPERATURE -->
+  <div class="card">
+    <h3 data-en="Soil Temperature Status (1 Acre)" data-hi="मिट्टी तापमान स्थिति (1 एकड़)"></h3>
+
+    <div class="risk-wrap">
+      <canvas id="tempChart"></canvas>
+      <div class="risk-center low">GOOD</div>
+    </div>
+
+    <p style="text-align:center;font-weight:800;color:#16a34a"
+       data-en="Temperature ideal for root growth"
+       data-hi="जड़ों की वृद्धि के लिए तापमान उपयुक्त"></p>
+
+    <div class="values">
+      <div class="value"><span data-en="Average Temp" data-hi="औसत तापमान"></span>24°C</div>
+      <div class="value"><span data-en="Ideal Range" data-hi="आदर्श सीमा"></span>20–28°C</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ADVISORY -->
+<h2 class="section-title" data-en="Soil Advisory (Swipe)" data-hi="मिट्टी सलाह (स्वाइप)"></h2>
+
+<div class="slider">
+
+  <div class="advisory red"
+       data-en="⚠ Irrigation needed within 24 hours"
+       data-hi="⚠ 24 घंटे में सिंचाई आवश्यक">
+    Confidence: 86%
+  </div>
+
+  <div class="advisory yellow"
+       data-en="🌱 Moisture uneven across field"
+       data-hi="🌱 खेत में नमी असमान">
+    Confidence: 78%
+  </div>
+
+  <div class="advisory green"
+       data-en="✅ Soil temperature favorable"
+       data-hi="✅ मिट्टी का तापमान अनुकूल">
+    Confidence: 92%
+  </div>
+
+  <div class="advisory blue"
+       data-en="💧 Best irrigation time: evening"
+       data-hi="💧 सर्वोत्तम सिंचाई समय: शाम">
+    Confidence: 89%
+  </div>
+
+</div>
+
+<script>
+/* DONUT CHARTS */
+new Chart(moistureChart,{
+  type:"doughnut",
+  data:{datasets:[{data:[38,62],backgroundColor:["#f59e0b","#e5e7eb"],borderWidth:0}]},
+  options:{cutout:"70%",plugins:{legend:{display:false},tooltip:{enabled:false}}}
+});
+
+new Chart(tempChart,{
+  type:"doughnut",
+  data:{datasets:[{data:[65,35],backgroundColor:["#16a34a","#e5e7eb"],borderWidth:0}]},
+  options:{cutout:"70%",plugins:{legend:{display:false},tooltip:{enabled:false}}}
+});
+
+/* LANGUAGE */
+const elements=document.querySelectorAll("[data-en]");
+enBtn.onclick=()=>setLang("en");
+hiBtn.onclick=()=>setLang("hi");
+
+function setLang(l){
+  elements.forEach(e=>e.textContent=e.dataset[l]);
+  enBtn.classList.toggle("active-lang",l==="en");
+  hiBtn.classList.toggle("active-lang",l==="hi");
+}
+setLang("en");
+</script>
+
+</body>
+</html>

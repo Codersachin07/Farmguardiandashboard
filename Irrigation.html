@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartFarm – Irrigation Intelligence</title>
+
+<style>
+*{box-sizing:border-box;font-family:Inter,Arial,sans-serif}
+body{margin:0;background:#f3f6fb;color:#111}
+
+/* HEADER */
+.header{
+  padding:22px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.header h1{margin:0;font-size:28px}
+.status{
+  background:#dcfce7;
+  color:#166534;
+  padding:8px 18px;
+  border-radius:22px;
+  font-weight:800;
+}
+
+/* CARD */
+.card{
+  background:#fff;
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 12px 28px rgba(0,0,0,.06);
+  margin:0 30px 24px;
+}
+
+/* SENSOR BAR */
+.sensor-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:14px;
+  font-weight:700;
+}
+.active{color:#16a34a}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+  margin:0 30px 28px;
+}
+
+/* BIG STATUS */
+.status-box{
+  text-align:center;
+}
+.status-circle{
+  width:130px;height:130px;
+  border-radius:50%;
+  background:conic-gradient(#22c55e 0% 65%,#e5e7eb 65%);
+  margin:14px auto;
+  display:flex;align-items:center;justify-content:center;
+}
+.status-circle span{
+  width:86px;height:86px;
+  background:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:18px;color:#16a34a;
+}
+
+/* VALUES */
+.value{
+  font-size:32px;
+  font-weight:900;
+  color:#2563eb;
+}
+.small{color:#555;font-weight:600}
+
+/* PUMP CONTROL */
+.switch{
+  position:relative;width:54px;height:30px;
+}
+.switch input{opacity:0;width:0;height:0}
+.slider{
+  position:absolute;inset:0;
+  background:#cbd5e1;
+  border-radius:20px;
+  transition:.3s;
+}
+.slider:before{
+  content:"";
+  position:absolute;
+  height:22px;width:22px;
+  left:4px;bottom:4px;
+  background:#fff;
+  border-radius:50%;
+  transition:.3s;
+}
+input:checked + .slider{background:#22c55e}
+input:checked + .slider:before{transform:translateX(24px)}
+
+/* LANG */
+.lang{
+  display:flex;
+  background:#e5e7eb;
+  border-radius:22px;
+  overflow:hidden;
+}
+.lang button{
+  border:none;
+  padding:6px 16px;
+  font-weight:800;
+  cursor:pointer;
+}
+.lang .active{
+  background:#111827;
+  color:#fff;
+}
+
+/* PROGRESS */
+.progress{
+  height:14px;
+  background:#e5e7eb;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:8px;
+}
+.progress div{
+  height:100%;
+  background:#2563eb;
+  width:0%;
+  transition:1s;
+}
+
+/* ADVISORY */
+.advisory{
+  background:linear-gradient(135deg,#3b82f6,#2563eb);
+  color:#fff;
+  padding:22px;
+  border-radius:20px;
+  font-weight:800;
+}
+
+/* FOOT NOTE */
+.note{
+  font-size:14px;
+  color:#555;
+  margin-top:6px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1 data-en="Irrigation Intelligence Panel" data-hi="सिंचाई बुद्धिमत्ता पैनल"></h1>
+  <div class="status" data-en="SYSTEM READY" data-hi="सिस्टम तैयार"></div>
+</div>
+
+<!-- SENSOR STATUS -->
+<div class="card">
+  <h3 data-en="Sensor Status" data-hi="सेंसर स्थिति"></h3>
+  <div class="sensor-row">
+    <span data-en="Soil Moisture: Active" data-hi="मिट्टी की नमी: सक्रिय"></span>
+    <span data-en="Soil Temperature: Active" data-hi="मिट्टी तापमान: सक्रिय"></span>
+    <span data-en="Water Flow Sensor: Active" data-hi="जल प्रवाह सेंसर: सक्रिय"></span>
+    <span data-en="Pump Controller: Active" data-hi="पंप नियंत्रक: सक्रिय"></span>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="grid">
+
+  <!-- IRRIGATION NEED -->
+  <div class="card status-box">
+    <h3 data-en="Irrigation Requirement" data-hi="सिंचाई आवश्यकता"></h3>
+    <div class="status-circle"><span data-en="YES" data-hi="हाँ"></span></div>
+    <p data-en="Soil moisture below optimal level"
+       data-hi="मिट्टी की नमी आदर्श स्तर से कम"></p>
+  </div>
+
+  <!-- WATER REQUIRED -->
+  <div class="card">
+    <h3 data-en="Water Required (1 Acre)" data-hi="पानी की आवश्यकता (1 एकड़)"></h3>
+    <div class="value">20,000 L</div>
+    <div class="small" data-en="Based on crop & soil condition"
+         data-hi="फसल और मिट्टी की स्थिति के आधार पर"></div>
+  </div>
+
+  <!-- PUMP TIME -->
+  <div class="card">
+    <h3 data-en="Irrigation Time (3 HP Pump)" data-hi="सिंचाई समय (3 एचपी पंप)"></h3>
+    <div class="value">2.2 Hours</div>
+    <div class="small" data-en="Flow rate ≈ 150 L/min"
+         data-hi="प्रवाह दर ≈ 150 लीटर/मिनट"></div>
+  </div>
+
+  <!-- PUMP CONTROL -->
+  <div class="card">
+    <h3 data-en="Pump Control" data-hi="पंप नियंत्रण"></h3>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
+      <span data-en="Pump Power" data-hi="पंप चालू"></span>
+      <label class="switch">
+        <input type="checkbox" id="pumpSwitch">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="progress">
+      <div id="progressBar"></div>
+    </div>
+
+    <div class="note"
+         data-en="Pump will auto-stop after required water flow"
+         data-hi="आवश्यक पानी पूरा होने पर पंप स्वतः बंद हो जाएगा"></div>
+  </div>
+
+</div>
+
+<!-- ADVISORY -->
+<div class="card advisory"
+     data-en="💧 Irrigation Advisory: Start irrigation now. Estimated completion in 2 hours 12 minutes."
+     data-hi="💧 सिंचाई सलाह: अभी सिंचाई शुरू करें। अनुमानित समय 2 घंटे 12 मिनट।">
+</div>
+
+<!-- LANGUAGE -->
+<div class="card">
+  <h3 data-en="Language" data-hi="भाषा"></h3>
+  <div class="lang">
+    <button id="enBtn" class="active">EN</button>
+    <button id="hiBtn">हिंदी</button>
+  </div>
+</div>
+
+<script>
+/* LANGUAGE */
+const els=document.querySelectorAll("[data-en]");
+const enBtn=document.getElementById("enBtn");
+const hiBtn=document.getElementById("hiBtn");
+
+function setLang(l){
+  els.forEach(e=>e.textContent=e.getAttribute(`data-${l}`));
+  enBtn.classList.toggle("active",l==="en");
+  hiBtn.classList.toggle("active",l==="hi");
+}
+enBtn.onclick=()=>setLang("en");
+hiBtn.onclick=()=>setLang("hi");
+
+/* PUMP SIMULATION */
+const pump=document.getElementById("pumpSwitch");
+const bar=document.getElementById("progressBar");
+let progress=0, timer;
+
+pump.onchange=()=>{
+  if(pump.checked){
+    timer=setInterval(()=>{
+      progress+=1;
+      bar.style.width=progress+"%";
+      if(progress>=100){
+        pump.checked=false;
+        clearInterval(timer);
+        progress=0;
+      }
+    },1300);
+  }else{
+    clearInterval(timer);
+  }
+}
+</script>
+
+</body>
+</html>

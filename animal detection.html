@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Farm Guardian – Animal Detection Panel</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f7fb;
+}
+
+header {
+  background: #0f172a;
+  color: white;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.status {
+  background: #22c55e;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: bold;
+  color: #083344;
+}
+
+.lang-btn {
+  background: #2563eb;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.container {
+  padding: 20px;
+}
+
+.camera-box {
+  background: black;
+  height: 380px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #94a3b8;
+  font-size: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.cards {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.indicators span {
+  display: block;
+  margin: 6px 0;
+  font-weight: bold;
+}
+
+.green { color: #16a34a; }
+.red { color: #dc2626; }
+.yellow { color: #ca8a04; }
+.blue { color: #2563eb; }
+.orange { color: #ea580c; }
+
+.advisory {
+  margin-top: 20px;
+  background: linear-gradient(90deg,#dc2626,#f97316);
+  color: white;
+  padding: 16px;
+  border-radius: 16px;
+  font-size: 16px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1 id="title">🐾 Farm Guardian – Animal Detection Panel</h1>
+  <div>
+    <span class="status" id="systemStatus">SYSTEM ON</span>
+    <button class="lang-btn" onclick="toggleLang()" id="langBtn">हिंदी</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="camera-box" id="cameraText">
+    ESP32-CAM LIVE ANIMAL MONITORING FEED
+  </div>
+
+  <div class="cards">
+
+    <div class="card">
+      <h3 id="detectTitle">🐘 Current Detection</h3>
+      <p id="animalText"><b>Animal:</b> Elephant</p>
+      <p id="categoryText"><b>Category:</b> Dangerous</p>
+      <p id="zoneText"><b>Distance Zone:</b> 0–20 m (Critical)</p>
+    </div>
+
+    <div class="card">
+      <h3 id="actionTitle">⚙ Automatic Actions</h3>
+      <p id="speakerText">🔊 Field Speaker: ON</p>
+      <p id="lightText">💡 Light: ON</p>
+      <p id="forestText">📞 Forest Authority: Informed</p>
+      <p id="villageText">📢 Village Alert: Active</p>
+      <p id="appText">📱 App Alert: Sent</p>
+    </div>
+
+    <div class="card indicators">
+      <h3 id="indicatorTitle">🚦 System Indicators</h3>
+      <span class="green" id="ind1">🟢 System ON</span>
+      <span class="red" id="ind2">🔴 Forest Authority Informed</span>
+      <span class="yellow" id="ind3">🟡 Crop Protection Active</span>
+      <span class="blue" id="ind4">🔵 App Alert Sent</span>
+      <span class="orange" id="ind5">🟠 Animal Deterrence Active</span>
+    </div>
+
+    <div class="card">
+      <h3 id="historyTitle">📜 Recent Detections</h3>
+      <p>🐘 Elephant – 9:32 PM</p>
+      <p>🐄 Cow – 6:15 PM</p>
+      <p>🐐 Goat – 5:40 PM</p>
+    </div>
+
+  </div>
+
+  <div class="advisory" id="advisoryText">
+    ⚠ Elephant detected within 15 meters. Deterrence activated and forest authority notified.
+  </div>
+
+</div>
+
+<script>
+let hindi = false;
+
+function toggleLang() {
+  hindi = !hindi;
+
+  if (hindi) {
+    title.innerText = "🐾 फार्म गार्डियन – पशु पहचान पैनल";
+    systemStatus.innerText = "सिस्टम चालू";
+    langBtn.innerText = "English";
+
+    cameraText.innerText = "ESP32-CAM लाइव पशु निगरानी दृश्य";
+
+    detectTitle.innerText = "🐘 वर्तमान पहचान";
+    animalText.innerHTML = "<b>जानवर:</b> हाथी";
+    categoryText.innerHTML = "<b>श्रेणी:</b> खतरनाक";
+    zoneText.innerHTML = "<b>दूरी क्षेत्र:</b> 0–20 मीटर (गंभीर)";
+
+    actionTitle.innerText = "⚙ स्वचालित कार्य";
+    speakerText.innerText = "🔊 खेत स्पीकर: चालू";
+    lightText.innerText = "💡 लाइट: चालू";
+    forestText.innerText = "📞 वन विभाग: सूचित";
+    villageText.innerText = "📢 गाँव चेतावनी: सक्रिय";
+    appText.innerText = "📱 ऐप अलर्ट: भेजा गया";
+
+    indicatorTitle.innerText = "🚦 सिस्टम संकेतक";
+    ind1.innerText = "🟢 सिस्टम चालू";
+    ind2.innerText = "🔴 वन विभाग सूचित";
+    ind3.innerText = "🟡 फसल सुरक्षा सक्रिय";
+    ind4.innerText = "🔵 ऐप अलर्ट भेजा गया";
+    ind5.innerText = "🟠 पशु भगाने की प्रक्रिया चालू";
+
+    historyTitle.innerText = "📜 हाल की पहचान";
+
+    advisoryText.innerText =
+      "⚠ 15 मीटर के भीतर हाथी पाया गया। सुरक्षा प्रणाली सक्रिय और वन विभाग को सूचना दी गई।";
+
+  } else {
+    location.reload();
+  }
+}
+</script>
+
+</body>
+</html>
